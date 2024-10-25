@@ -1,7 +1,8 @@
 import { AccountService } from "../services/account.service";
 import { Arg, Mutation, Query, Resolver } from "type-graphql";
 import { Account } from "../entities/account.entity";
-import { PasswordSignUpInput } from "../inputs/create_account.input";
+import { EmailInput } from "../inputs/create_account.input";
+import { TryCatchAsyncDec } from "@dolphjs/dolph/common";
 
 @Resolver(() => Account)
 export class AccountResolver {
@@ -19,9 +20,13 @@ export class AccountResolver {
   }
 
   @Mutation(() => Account)
-  async passwordSignUp(
-    @Arg("data", () => PasswordSignUpInput) data: PasswordSignUpInput
+  async createAccount(
+    @Arg("data", () => EmailInput) data: EmailInput
   ): Promise<Account> {
-    return this.accountService.createAccount(data);
+    try {
+      return this.accountService.createAccount(data);
+    } catch (e: any) {
+      throw e;
+    }
   }
 }

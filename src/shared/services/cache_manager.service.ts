@@ -3,6 +3,10 @@ import { Dolph } from "@dolphjs/dolph/common";
 import { redisClient } from "../configs/redis.config";
 
 export class CacheService extends DolphServiceHandler<Dolph> {
+  constructor() {
+    super("cacheService");
+  }
+
   public async save(key: string, value: any, exp?: number) {
     return redisClient.setex(key, exp || 60 * 5, JSON.stringify(value));
   }
@@ -14,7 +18,7 @@ export class CacheService extends DolphServiceHandler<Dolph> {
   }
 
   public async getAndRemove(key: string, exp?: number): Promise<any> {
-    const value = await redisClient.getex(key, "EX", exp || 0);
+    const value = await redisClient.getex(key, "EX", exp);
     if (value) return JSON.parse(value);
     return null;
   }

@@ -20,5 +20,6 @@ export const session = expressSession({
 export const schema = async function createSchema() {
   return await buildSchema({
     resolvers: [AccountResolver],
+    validate: true,
   });
 };

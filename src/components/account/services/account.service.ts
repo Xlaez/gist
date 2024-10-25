@@ -3,17 +3,49 @@ import { Dolph } from "@dolphjs/dolph/common";
 import { Repository } from "typeorm";
 import { Account } from "../entities/account.entity";
 import { AppDataSource } from "@/shared/configs/data_source";
+import { AuthenticationError } from "type-graphql";
+import { CacheService } from "@/shared/services/cache_manager.service";
+import { generateOtp } from "@/shared/utils/otp_generator.utils";
+import { sendVerifyEmail } from "@/shared/services/mail.service";
 
 export class AccountService extends DolphServiceHandler<Dolph> {
   private readonly accountRepo: Repository<Account>;
+  private readonly cacheService: CacheService;
 
   constructor() {
     super("accountService");
     this.accountRepo = AppDataSource.getRepository(Account);
+    this.cacheService = new CacheService();
   }
 
   async createAccount(data: Partial<Account>): Promise<Account> {
-    const account = this.accountRepo.create(data);
-    return this.accountRepo.save(account);
+    const existingAccount = await this.getAccountByEmail(data.email);
+
+    try {
+      if (existingAccount)
+        throw new AuthenticationError(
+          "An account with this email already exists."
+        );
+
+      const account = this.accountRepo.create(data);
+
+      const otp = generateOtp();
+
+      await this.cacheService.getAndRemove(`0-${data.email}`, 30);
+
+      await this.cacheService.save(`0-${data.email}`, otp, 3600);
+
+      account.login_type = "password";
+
+      sendVerifyEmail(data.email, otp);
+
+      return this.accountRepo.save(account);
+    } catch (e: any) {
+      throw e;
+    }
+  }
+
+  async getAccountByEmail(email: string): Promise<Account | null | undefined> {
+    return this.accountRepo.findOne({ where: { email } });
   }
 }

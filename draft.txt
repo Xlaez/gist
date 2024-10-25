@@ -53,6 +53,41 @@ encrypt ip_address with a private/publickey system
 
 Use elixir/go for the chat service with mongo or cassandra
 
-Setup a secondary db for storing temp data like active status ('away', 'active')
-
 ADD!! Notifications
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+
+*
+
+
+
+*/
+
+Authentication
+
+1.Input email, validate email and verify.
+2. Collect pasword, ask if they'll enable 2 factor authorization
+3. Make them pick country and campus, gistId, upload avatar and bio.
+
+
