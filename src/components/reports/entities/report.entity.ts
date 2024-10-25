@@ -22,12 +22,12 @@ export class Report {
   @Field(() => Account)
   @ManyToOne(() => Account, (account) => account.reportsMade)
   @JoinColumn({ name: "reporter" })
-  reporter: Account;
+  reporter: typeof Account;
 
   @Field(() => Account)
   @ManyToOne(() => Account, (account) => account.reportsReceived)
   @JoinColumn({ name: "reported" })
-  reported: Account;
+  reported: typeof Account;
 
   @Field(() => String)
   @Column({ length: 255 })
@@ -35,7 +35,7 @@ export class Report {
 
   @Field(() => String)
   @Column({ type: "enum", default: ReportType.account, enum: ReportType })
-  report_type: ReportType;
+  report_type: typeof ReportType;
 
   @Field(() => Date)
   @CreateDateColumn()

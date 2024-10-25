@@ -4,6 +4,7 @@
   "compilerOptions": {
     "allowJs": false,
     "declaration": false,
+    "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "sourceMap": false,
     "useUnknownInCatchVariables": false,
@@ -11,7 +12,7 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
-    "target": "ES2022",
+    "target": "ESNext",
     "baseUrl": "src",
     "outDir": "app",
     "pretty": true,

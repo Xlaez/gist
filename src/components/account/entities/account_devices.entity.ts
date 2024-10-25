@@ -20,7 +20,7 @@ export class AccountDevice {
   @Field(() => Account, { nullable: true })
   @ManyToOne(() => Account, (account) => account.devices)
   @JoinColumn({ name: "account_id" })
-  account: Account;
+  account: typeof Account;
 
   @Field(() => String)
   @Column({ length: 100, type: "varchar" })

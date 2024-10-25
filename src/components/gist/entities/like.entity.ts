@@ -21,12 +21,12 @@ export class Likes {
   @Field(() => Account)
   @ManyToOne(() => Account, (account) => account.likes)
   @JoinColumn({ name: "account_id" })
-  account: Account;
+  account: typeof Account;
 
   @Field(() => Campus)
   @ManyToOne(() => Campus)
   @JoinColumn({ name: "campus_id" })
-  campus: Campus;
+  campus: typeof Campus;
 
   @Field(() => Date)
   @CreateDateColumn()

@@ -22,7 +22,7 @@ export class Media {
   @Field(() => Gist)
   @ManyToOne(() => Gist, (gist) => gist.media)
   @JoinColumn({ name: "gist_id" })
-  gist: Gist;
+  gist: typeof Gist;
 
   @Field(() => String)
   @Column({ length: 15 })

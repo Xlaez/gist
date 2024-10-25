@@ -20,7 +20,7 @@ export class Moderator {
   @Field(() => Account)
   @ManyToOne(() => Account, (account) => account.moderators)
   @JoinColumn({ name: "account_id" })
-  account: Account;
+  account: typeof Account;
 
   @Field()
   @CreateDateColumn()

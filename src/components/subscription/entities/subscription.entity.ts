@@ -22,12 +22,12 @@ export class Subscription {
   @Field(() => Account)
   @ManyToOne(() => Account, (account) => account.subscriptions)
   @JoinColumn({ name: "account_id" })
-  account: Account;
+  account: typeof Account;
 
   @Field(() => SubscriptionService)
   @ManyToOne(() => SubscriptionService, (service) => service.subscriptions)
   @JoinColumn({ name: "service_id" })
-  service: SubscriptionService;
+  service: typeof SubscriptionService;
 
   @Field(() => Int)
   @Column()
