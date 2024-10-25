@@ -24,19 +24,19 @@ export class Media {
   @JoinColumn({ name: "gist_id" })
   gist: Gist;
 
-  @Field()
+  @Field(() => String)
   @Column({ length: 15 })
   media_type: string;
 
-  @Field()
+  @Field(() => String)
   @Column({ type: "text" })
   media_url: string;
 
-  @Field()
+  @Field(() => Date)
   @CreateDateColumn()
   created_at: Date;
 
-  @Field()
+  @Field(() => Date)
   @UpdateDateColumn()
   updated_at: Date;
 }

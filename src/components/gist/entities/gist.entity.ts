@@ -14,6 +14,7 @@ import {
   UpdateDateColumn,
 } from "typeorm";
 import { Media } from "./media.entity";
+import { GistType } from "../enums";
 
 @ObjectType()
 @Entity()
@@ -33,31 +34,31 @@ export class Gist {
   @JoinColumn({ name: "campus_id" })
   campus: Campus;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   @Column({ type: "text", nullable: true })
   text?: string;
 
-  @Field()
+  @Field(() => Boolean)
   @Column({ default: true })
   is_public: boolean;
 
-  @Field()
+  @Field(() => Boolean)
   @Column({ default: false })
   is_deleted: boolean;
 
-  @Field()
-  @Column({ length: 15, default: "gist" })
+  @Field(() => String)
+  @Column({ length: 15, default: GistType.gist, type: "enum", enum: GistType }) /// update to an enum
   type: string;
 
   @Field(() => [String], { nullable: true })
   @Column("varchar", { length: 150, array: true, nullable: true })
   tags?: string[];
 
-  @Field()
+  @Field(() => Date)
   @CreateDateColumn()
   created_at: Date;
 
-  @Field()
+  @Field(() => Date)
   @UpdateDateColumn()
   updated_at: Date;
 
@@ -69,11 +70,11 @@ export class Gist {
   @Column({ default: 0 })
   likes_count: number;
 
-  @Field()
+  @Field(() => Boolean)
   @Column({ default: false })
   has_parent: boolean;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   @Column({ type: "uuid", nullable: true })
   parent_id?: string;
 

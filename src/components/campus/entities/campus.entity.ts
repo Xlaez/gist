@@ -22,39 +22,39 @@ export class Campus {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Field()
-  @Column({ unique: true, length: 255 })
+  @Field(() => String)
+  @Column({ unique: true, length: 255, type: "varchar" })
   name: string;
 
-  @Field()
+  @Field(() => String)
   @Column({ type: "text" })
   domain: string;
 
-  @Field()
+  @Field(() => String)
   @Column({ type: "text" })
   cover_img: string;
 
-  @Field()
+  @Field(() => String)
   @Column({ length: 255 })
   description: string;
 
-  @Field()
+  @Field(() => Boolean)
   @Column({ default: false })
   is_deleted: boolean;
 
-  @Field()
+  @Field(() => Boolean)
   @Column({ default: false })
   locked: boolean;
 
-  @Field()
+  @Field(() => Boolean)
   @Column({ default: false })
   is_banned: boolean;
 
-  @Field()
+  @Field(() => Date)
   @CreateDateColumn()
   created_at: Date;
 
-  @Field()
+  @Field(() => Date)
   @UpdateDateColumn()
   updated_at: Date;
 

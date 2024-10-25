@@ -27,11 +27,14 @@ export class Account {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Field({ nullable: true, description: "Equivalent for username" })
+  @Field((type) => String, {
+    nullable: true,
+    description: "Equivalent for username",
+  })
   @Column({ unique: true, length: 50, nullable: true })
   gist_id?: string;
 
-  @Field()
+  @Field((type) => Boolean)
   @Column({ default: false })
   is_banned: boolean;
 
@@ -40,7 +43,7 @@ export class Account {
   @JoinColumn({ name: "campus_id" })
   campus?: Campus;
 
-  @Field()
+  @Field(() => Boolean)
   @Column({ default: false })
   is_deactivated: boolean;
 
@@ -48,50 +51,52 @@ export class Account {
   @Column({ default: false })
   is_verified: boolean;
 
-  @Field()
+  @Field(() => Boolean)
   @Column({ default: false })
   is_subscribed: boolean;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   @Column({ length: 150, nullable: true })
   name?: string;
 
-  @Field({ nullable: true })
+  @Field(() => Date, { nullable: true })
   @Column({ type: "timestamp", nullable: true })
   dob?: Date;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   @Column({ unique: true, length: 255, nullable: true })
   email?: string;
 
-  @Field({ description: "Generate a random avatar on account creation" })
+  @Field(() => String, {
+    description: "Generate a random avatar on account creation",
+  })
   @Column({ type: "text" })
   avatar: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   @Column({ length: 50, nullable: true })
   country?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   @Column({ length: 255, nullable: true })
   bio?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   @Column({ length: 255, nullable: true })
   quote?: string;
 
   @Column({ type: "text", nullable: true })
   password?: string;
 
-  @Field()
+  @Field(() => String)
   @Column({ length: 50 })
   login_type: string;
 
-  @Field()
+  @Field(() => String)
   @Column({ default: false })
   two_factor_auth: boolean;
 
-  @Field()
+  @Field(() => String)
   @Column({ default: true })
   send_notifications: boolean;
 
@@ -100,11 +105,11 @@ export class Account {
   @JoinColumn({ name: "popularity" })
   popularity: Popularity;
 
-  @Field()
+  @Field(() => Date)
   @CreateDateColumn()
   created_at: Date;
 
-  @Field()
+  @Field(() => Date)
   @UpdateDateColumn()
   updated_at: Date;
 

@@ -9,6 +9,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
+import { ReportType } from "../enums";
 
 @ObjectType()
 @Entity()
@@ -28,15 +29,15 @@ export class Report {
   @JoinColumn({ name: "reported" })
   reported: Account;
 
-  @Field()
+  @Field(() => String)
   @Column({ length: 255 })
   reason: string;
 
-  @Field()
-  @Column({ length: 50, default: "account" })
-  report_type: string;
+  @Field(() => String)
+  @Column({ type: "enum", default: ReportType.account, enum: ReportType })
+  report_type: ReportType;
 
-  @Field()
+  @Field(() => Date)
   @CreateDateColumn()
   created_at: Date;
 }

@@ -11,7 +11,7 @@ export class Popularity {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Field({ defaultValue: "meh" })
+  @Field(() => String, { defaultValue: "meh" })
   @Column({ unique: true, default: "meh" })
   level: string;
 

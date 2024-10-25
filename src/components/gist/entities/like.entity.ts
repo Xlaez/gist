@@ -28,7 +28,7 @@ export class Likes {
   @JoinColumn({ name: "campus_id" })
   campus: Campus;
 
-  @Field()
+  @Field(() => Date)
   @CreateDateColumn()
   created_at: Date;
 }

@@ -33,7 +33,7 @@ export class Subscription {
   @Column()
   amount: number;
 
-  @Field()
+  @Field(() => Date)
   @CreateDateColumn()
   created_at: Date;
 }
