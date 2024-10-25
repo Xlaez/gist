@@ -7,6 +7,7 @@ import { AuthenticationError } from "type-graphql";
 import { CacheService } from "@/shared/services/cache_manager.service";
 import { generateOtp } from "@/shared/utils/otp_generator.utils";
 import { sendVerifyEmail } from "@/shared/services/mail.service";
+import { VerifyOtpInput } from "../inputs/create_account.input";
 
 export class AccountService extends DolphServiceHandler<Dolph> {
   private readonly accountRepo: Repository<Account>;
@@ -31,7 +32,7 @@ export class AccountService extends DolphServiceHandler<Dolph> {
 
       const otp = generateOtp();
 
-      await this.cacheService.getAndRemove(`0-${data.email}`, 30);
+      await this.cacheService.remove([`0-${data.email}`]);
 
       await this.cacheService.save(`0-${data.email}`, otp, 3600);
 
@@ -40,6 +41,25 @@ export class AccountService extends DolphServiceHandler<Dolph> {
       sendVerifyEmail(data.email, otp);
 
       return this.accountRepo.save(account);
+    } catch (e: any) {
+      throw e;
+    }
+  }
+
+  async verifyOtp(data: VerifyOtpInput): Promise<boolean> {
+    try {
+      const otp = await this.cacheService.get(`0-${data.email}`);
+
+      if (!otp)
+        throw new AuthenticationError(
+          "Otp has either expired or is incorrect."
+        );
+
+      await this.cacheService.remove([`0-${data.email}`]);
+
+      if (otp === data.otp) return true;
+
+      throw new AuthenticationError("Otp Incorrect. Provide the correct Otp");
     } catch (e: any) {
       throw e;
     }

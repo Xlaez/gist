@@ -1,8 +1,9 @@
 import { AccountService } from "../services/account.service";
 import { Arg, Mutation, Query, Resolver } from "type-graphql";
 import { Account } from "../entities/account.entity";
-import { EmailInput } from "../inputs/create_account.input";
+import { EmailInput, VerifyOtpInput } from "../inputs/create_account.input";
 import { TryCatchAsyncDec } from "@dolphjs/dolph/common";
+import { VerifyEmailResponse } from "../responses/create_account.response";
 
 @Resolver(() => Account)
 export class AccountResolver {
@@ -25,6 +26,18 @@ export class AccountResolver {
   ): Promise<Account> {
     try {
       return this.accountService.createAccount(data);
+    } catch (e: any) {
+      throw e;
+    }
+  }
+
+  @Mutation(() => VerifyEmailResponse)
+  async verifyEmail(
+    @Arg("data", () => VerifyOtpInput) data: VerifyOtpInput
+  ): Promise<VerifyEmailResponse> {
+    try {
+      const success = await this.accountService.verifyOtp(data);
+      return { success, message: "Email verified successfully" };
     } catch (e: any) {
       throw e;
     }
