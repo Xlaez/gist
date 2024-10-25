@@ -1,5 +1,9 @@
 import { DolphServiceHandler } from "@dolphjs/dolph/classes";
-import { Dolph } from "@dolphjs/dolph/common";
+import {
+  BadRequestException,
+  Dolph,
+  NotFoundException,
+} from "@dolphjs/dolph/common";
 import { Repository } from "typeorm";
 import { Account } from "../entities/account.entity";
 import { AppDataSource } from "@/shared/configs/data_source";
@@ -61,6 +65,31 @@ export class AccountService extends DolphServiceHandler<Dolph> {
 
       throw new AuthenticationError("Otp Incorrect. Provide the correct Otp");
     } catch (e: any) {
+      throw e;
+    }
+  }
+
+  async resendOtp(data: Partial<Account>): Promise<Account> {
+    try {
+      const existingAccount = await this.getAccountByEmail(data.email);
+
+      if (!existingAccount)
+        throw new NotFoundException("Account does not exist");
+
+      if (existingAccount.is_verified)
+        throw new BadRequestException("Account is already verified");
+
+      const otp = generateOtp();
+
+      await this.cacheService.remove([`0-${data.email}`]);
+
+      await this.cacheService.save(`0-${data.email}`, otp, 3600);
+
+      //  use another email function
+      sendVerifyEmail(data.email, otp);
+
+      return existingAccount;
+    } catch (e) {
       throw e;
     }
   }

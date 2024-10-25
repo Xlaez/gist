@@ -42,4 +42,15 @@ export class AccountResolver {
       throw e;
     }
   }
+
+  @Mutation(() => Account)
+  async resendVerifyEmailOtp(
+    @Arg("data", () => EmailInput) data: EmailInput
+  ): Promise<Account> {
+    try {
+      return this.accountService.resendOtp(data);
+    } catch (e: any) {
+      throw e;
+    }
+  }
 }
