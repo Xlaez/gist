@@ -2,6 +2,7 @@ import { DolphServiceHandler } from "@dolphjs/dolph/classes";
 import {
   BadRequestException,
   Dolph,
+  NotAcceptableException,
   NotFoundException,
 } from "@dolphjs/dolph/common";
 import { Repository } from "typeorm";
@@ -12,6 +13,8 @@ import { CacheService } from "@/shared/services/cache_manager.service";
 import { generateOtp } from "@/shared/utils/otp_generator.utils";
 import { sendVerifyEmail } from "@/shared/services/mail.service";
 import { VerifyOtpInput } from "../inputs/create_account.input";
+import { hashWithBcrypt } from "@dolphjs/dolph/utilities";
+import { IsGistIdAvailableResponse } from "../responses/create_account.response";
 
 export class AccountService extends DolphServiceHandler<Dolph> {
   private readonly accountRepo: Repository<Account>;
@@ -61,6 +64,11 @@ export class AccountService extends DolphServiceHandler<Dolph> {
 
       await this.cacheService.remove([`0-${data.email}`]);
 
+      await this.accountRepo.update(
+        { email: data.email },
+        { is_verified: true }
+      );
+
       if (otp === data.otp) return true;
 
       throw new AuthenticationError("Otp Incorrect. Provide the correct Otp");
@@ -94,7 +102,59 @@ export class AccountService extends DolphServiceHandler<Dolph> {
     }
   }
 
+  async isGistIdAvailable(gist_id: string): Promise<IsGistIdAvailableResponse> {
+    try {
+      if (await this.getAccountByGistID(gist_id))
+        return {
+          available: false,
+          message: "This gist_id belongs to another user",
+        };
+
+      return {
+        available: true,
+      };
+    } catch (e: any) {
+      throw e;
+    }
+  }
+
+  async setPassword(data: Partial<Account>): Promise<Account> {
+    try {
+      const account = await this.getAccountByID(data.id);
+
+      if (!account) throw new NotFoundException("Account does not exist");
+
+      if (!account.is_verified)
+        throw new NotAcceptableException("Account not verified");
+
+      await this.accountRepo.update(
+        { id: account.id },
+        {
+          password: await hashWithBcrypt({
+            pureString: data.password,
+            salt: 11,
+          }),
+          gist_id: data.gist_id,
+        }
+      );
+
+      return account;
+    } catch (e: any) {
+      throw e;
+    }
+  }
+
+  async getAccountByID(id: string): Promise<Account | null | undefined> {
+    return this.accountRepo.findOne({ where: { id } });
+  }
+
   async getAccountByEmail(email: string): Promise<Account | null | undefined> {
     return this.accountRepo.findOne({ where: { email } });
+  }
+
+  async getAccountByGistID(
+    gist_id: string
+  ): Promise<Account | null | undefined> {
+    return this.accountRepo.findOne({ where: { gist_id } });
   }
 }

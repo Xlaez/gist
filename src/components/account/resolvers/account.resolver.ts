@@ -1,9 +1,16 @@
 import { AccountService } from "../services/account.service";
 import { Arg, Mutation, Query, Resolver } from "type-graphql";
 import { Account } from "../entities/account.entity";
-import { EmailInput, VerifyOtpInput } from "../inputs/create_account.input";
+import {
+  EmailInput,
+  SetPasswordInput,
+  VerifyOtpInput,
+} from "../inputs/create_account.input";
 import { TryCatchAsyncDec } from "@dolphjs/dolph/common";
-import { VerifyEmailResponse } from "../responses/create_account.response";
+import {
+  IsGistIdAvailableResponse,
+  VerifyEmailResponse,
+} from "../responses/create_account.response";
 
 @Resolver(() => Account)
 export class AccountResolver {
@@ -18,6 +25,17 @@ export class AccountResolver {
     @Arg("id", () => String) id: string
   ): Promise<Account | undefined> {
     return;
+  }
+
+  @Query(() => IsGistIdAvailableResponse)
+  async isGistIdAvailable(
+    @Arg("gist_id", () => String) gist_id: string
+  ): Promise<IsGistIdAvailableResponse> {
+    try {
+      return this.accountService.isGistIdAvailable(gist_id);
+    } catch (e: any) {
+      throw e;
+    }
   }
 
   @Mutation(() => Account)
@@ -49,6 +67,17 @@ export class AccountResolver {
   ): Promise<Account> {
     try {
       return this.accountService.resendOtp(data);
+    } catch (e: any) {
+      throw e;
+    }
+  }
+
+  @Mutation(() => Account)
+  async setPasswordAndID(
+    @Arg("data", () => SetPasswordInput) data: SetPasswordInput
+  ): Promise<Account> {
+    try {
+      return this.accountService.setPassword(data);
     } catch (e: any) {
       throw e;
     }

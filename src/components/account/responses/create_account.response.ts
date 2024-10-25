@@ -8,3 +8,12 @@ export class VerifyEmailResponse {
   @Field({ nullable: true })
   message?: string;
 }
+
+@ObjectType()
+export class IsGistIdAvailableResponse {
+  @Field()
+  available: boolean;
+
+  @Field({ nullable: true })
+  message?: string;
+}
