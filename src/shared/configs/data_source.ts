@@ -8,16 +8,17 @@ import { Popularity } from "@/components/popularity/entities/popularity.entity";
 import { Subscription } from "@/components/subscription/entities/subscription.entity";
 import { SubscriptionService } from "@/components/subscription/entities/subscription_service.entity";
 import { DataSource } from "typeorm";
-import { serverConfigs } from "./envs.config";
+import { postgresConfig, serverConfigs } from "./envs.config";
 import { Report } from "@/components/reports/entities/report.entity";
+import { Moderator } from "@/components/campus/entities/moderator.entity";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
   host: "localhost",
-  port: 5432,
-  username: "user",
-  password: "password123",
-  database: "gist",
+  port: postgresConfig.port,
+  username: postgresConfig.user,
+  password: postgresConfig.pass,
+  database: postgresConfig.db,
   entities: [
     Gist,
     Account,
@@ -27,6 +28,7 @@ export const AppDataSource = new DataSource({
     Popularity,
     Media,
     Report,
+    Moderator,
     Subscription,
     SubscriptionService,
   ],

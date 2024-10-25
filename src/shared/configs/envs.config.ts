@@ -8,3 +8,10 @@ export const serverConfigs = {
   sessionSecret: process.env.SESSION_SECRET || "sessionxxxsessionunpredictable",
   env: process.env.ENV || "development",
 };
+
+export const postgresConfig = {
+  user: process.env.POSTGRES_USER || "user",
+  pass: process.env.POSTGRES_PASSWORD || "password123",
+  db: process.env.POSTGRES_DB || "gist",
+  port: 5432,
+};

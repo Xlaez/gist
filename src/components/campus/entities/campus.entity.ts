@@ -61,11 +61,11 @@ export class Campus {
   // Relationships
   @ManyToOne(() => Popularity, (popularity) => popularity.campuses)
   @JoinColumn({ name: "popularity" })
-  popularity: Popularity;
+  popularity: typeof Popularity;
 
   @OneToMany(() => Account, (account) => account.campus)
-  accounts: Account[];
+  accounts: (typeof Account)[];
 
   @OneToMany(() => Gist, (gist) => gist.campus)
-  gists: Gist[];
+  gists: (typeof Gist)[];
 }

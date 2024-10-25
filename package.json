@@ -13,8 +13,9 @@
     "dev:docker:stop": "docker-compose -f docker-compose-dev.yml down",
     "build": "dolph build",
     "build:tsc": "tsc && tsc-alias",
-    "start": "dolph start --bun",
-    "clean": "rm -r app && rm -r logs"
+    "start": "dolph start",
+    "clean": "rm -r app && rm -r logs",
+    "migration:run": "typeorm migration:run"
   },
   "dependencies": {
     "@dolphjs/dolph": "^1.3.2",

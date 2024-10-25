@@ -47,7 +47,7 @@ export class Gist {
   is_deleted: boolean;
 
   @Field(() => String)
-  @Column({ length: 15, default: GistType.gist, type: "enum", enum: GistType }) /// update to an enum
+  @Column({ default: GistType.gist, type: "enum", enum: GistType }) /// update to an enum
   type: string;
 
   @Field(() => [String], { nullable: true })

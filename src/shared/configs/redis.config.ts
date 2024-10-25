@@ -5,7 +5,7 @@ import { logger } from "@dolphjs/dolph/utilities";
 export const redisClient = new Redis({
   host: redisConfigs.host as string,
   port: redisConfigs.port as number,
-  password: redisConfigs.password as string,
+  // password: redisConfigs.password as string,
   retryStrategy: (times) => Math.min(times * 50, 2000),
 });
 

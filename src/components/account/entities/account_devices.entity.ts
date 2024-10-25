@@ -11,7 +11,7 @@ import { Account } from "./account.entity";
 
 @ObjectType()
 @Entity()
-@Index("Account_device_index_0", ["account_id", "device_type", "time_zone"])
+@Index("Account_device_index_0", ["account", "device_type", "time_zone"])
 export class AccountDevice {
   @Field(() => ID)
   @PrimaryGeneratedColumn("uuid")

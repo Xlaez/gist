@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  # app:
+  #   build: 
+  #     context: ./
+  #     dockerfile: Dockerfile
+  #   container_name: gist_main_service
+  #   depends_on:
+  #     - db
+  #   environment:
+  #     - POSTGRES_SERVER=db
+  #   env_file:
+  #     - .env
+  #   volumes:
+  #     - .:/build
+  #   ports:
+  #     - '4000:4000'
+  #   networks:
+  #     - gist-network
+
+  db:
+    image: postgres:13-alpine
+    container_name: postgres
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    env_file:
+      - .env
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+    networks:
+      - gist-network
+
+networks:
+  gist-network:
+
+volumes:
+  db-data:
