@@ -1,0 +1,29 @@
+1. setup proper security measures
+2. setup proper scalability measures
+
+- gist allows users to gist with hashtags.
+An example - "Jerry@unn.ng" dropped a hot gist about ebonyi girls"
+
+- gist allows users to register under one campus.
+
+- gist has campus live gist where all messages disappear after 24 hours. (like a group chat for all members of the campus)
+
+- two types of posts, an **update** and a **gist**. An update lasts as long as the author does not delete it, a gist last 24hours and has a live chat where people can talk about the gist going on.
+
+- allow for an update or a gist to be public or only visible to a campus, even if it is visible to other campuses,they can't join in the live chat
+
+- video(s) - not longer than 1 minute, picture(s) and text - not longer than 300 characters
+
+- each account has level of popularity in each campuses which is based on: account with most activity ratio, likes and re-gists.
+
+- Remember! don't delete an uodate but hide it, will be needed for analysis for most popular gist account.
+
+user{
+campus_id
+}
+
+# use postgreSQL for gists, accounts, media, campuses, popularity, subscriptions, reports, moderator
+
+Use elixir/go for the chat service with mongo or cassandra
+
+Setup a secondary db for storing temp data like active status ('away', 'active')
