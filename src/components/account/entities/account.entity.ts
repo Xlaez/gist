@@ -18,6 +18,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+import { AccountDevice } from "./account_devices.entity";
 
 @ObjectType()
 @Entity()
@@ -115,6 +116,9 @@ export class Account {
 
   @OneToMany(() => Gist, (gist) => gist.account)
   gists: Gist[];
+
+  @OneToMany(() => AccountDevice, (device) => device.account)
+  devices: AccountDevice[];
 
   @OneToMany(() => Report, (report) => report.reporter)
   reportsMade: Report[];

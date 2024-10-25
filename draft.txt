@@ -22,6 +22,33 @@ user{
 campus_id
 }
 
+use a secondary db to store user session, these includes the device details {
+device_id (mac addresss / IMEI for mobile)
+session_token for each device
+ip_address
+time_zone
+device_model
+app_version
+last_active_time
+}
+CREATE TABLE user_devices (
+    id SERIAL PRIMARY KEY,
+    account_id INT REFERENCES users(id),
+    device_id VARCHAR(100),         -- Unique identifier for the device
+    device_type VARCHAR(50),        -- e.g., 'iPhone', 'Android', 'Web'
+    device_os VARCHAR(50),          -- e.g., 'iOS', 'Android'
+    app_version VARCHAR(20),        -- Version of the app installed on the device
+    time_zone VARCHAR(50),
+    session_token TEXT,
+    ip_address VARCHAR(45),         -- IP address of the device connection
+    last_active TIMESTAMP,          -- Last time the device was active
+    login_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  -- Time the device logged in
+    is_revoked BOOLEAN DEFAULT FALSE,  -- Whether the device is revoked
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+encrypt ip_address with a private/publickey system
+
 # use postgreSQL for gists, accounts, media, campuses, popularity, subscriptions, reports, moderator
 
 Use elixir/go for the chat service with mongo or cassandra
