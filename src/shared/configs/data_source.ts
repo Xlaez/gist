@@ -32,7 +32,7 @@ export const AppDataSource = new DataSource({
     Subscription,
     SubscriptionService,
   ],
-  synchronize: serverConfigs.env === "production",
+  synchronize: serverConfigs.env === "development",
   logging: true,
   migrations: [__dirname + "/migration/*.ts"],
 });
