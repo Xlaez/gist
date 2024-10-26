@@ -144,6 +144,24 @@ export class AccountService extends DolphServiceHandler<Dolph> {
     }
   }
 
+  async setBasicAccountDetails(
+    data: Partial<Account>,
+    id: string
+  ): Promise<Account | undefined> {
+    let account = await this.accountRepo.findOne({ where: { id } });
+
+    if (!account) throw new NotFoundException("Cannot find this account");
+
+    account.avatar = data.avatar;
+    account.bio = data.bio;
+    account.campus = data.campus;
+    account.country = data.country;
+    account.two_factor_auth = data.two_factor_auth;
+    account.dob = data.dob;
+
+    return await this.accountRepo.save(account);
+  }
+
   async getAccountByID(id: string): Promise<Account | null | undefined> {
     return this.accountRepo.findOne({ where: { id } });
   }

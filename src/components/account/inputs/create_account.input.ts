@@ -1,6 +1,9 @@
 import {
+  IsBoolean,
+  IsDate,
   IsEmail,
   IsNotEmpty,
+  IsOptional,
   IsString,
   Length,
   Matches,
@@ -58,4 +61,35 @@ export class SetPasswordInput {
   @IsString({ message: "Provide a valid account ID" })
   @Length(36, 36, { message: "provide a valid account ID" })
   id: string;
+}
+
+@InputType()
+export class SetBasicAccountDetailsInput {
+  @Field()
+  @IsString()
+  @IsNotEmpty()
+  country: string;
+
+  @Field()
+  @IsString()
+  @IsNotEmpty()
+  campus: string;
+
+  @Field()
+  @IsDate()
+  dob: string;
+
+  @Field({ nullable: true })
+  @IsString()
+  @IsOptional()
+  bio?: string;
+
+  @Field({ nullable: true })
+  @IsString()
+  @IsOptional()
+  avatar?: string;
+
+  @Field()
+  @IsBoolean()
+  two_factor_auth: boolean;
 }
