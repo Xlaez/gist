@@ -1,10 +1,5 @@
 import { DolphServiceHandler } from "@dolphjs/dolph/classes";
-import {
-  BadRequestException,
-  Dolph,
-  NotAcceptableException,
-  NotFoundException,
-} from "@dolphjs/dolph/common";
+import { Dolph } from "@dolphjs/dolph/common";
 import { Repository } from "typeorm";
 import { Account } from "../entities/account.entity";
 import { AppDataSource } from "@/shared/configs/data_source";
@@ -15,6 +10,12 @@ import { sendVerifyEmail } from "@/shared/services/mail.service";
 import { VerifyOtpInput } from "../inputs/create_account.input";
 import { hashWithBcrypt } from "@dolphjs/dolph/utilities";
 import { IsGistIdAvailableResponse } from "../responses/create_account.response";
+import {
+  NotFoundError,
+  NotAllowedError,
+  BadRequestError,
+  ServerError,
+} from "@dolphjs/graphql/common";
 
 export class AccountService extends DolphServiceHandler<Dolph> {
   private readonly accountRepo: Repository<Account>;
@@ -81,11 +82,10 @@ export class AccountService extends DolphServiceHandler<Dolph> {
     try {
       const existingAccount = await this.getAccountByEmail(data.email);
 
-      if (!existingAccount)
-        throw new NotFoundException("Account does not exist");
+      if (!existingAccount) throw new NotFoundError("Account does not exist");
 
       if (existingAccount.is_verified)
-        throw new BadRequestException("Account is already verified");
+        throw new BadRequestError("Account is already verified");
 
       const otp = generateOtp();
 
@@ -122,10 +122,12 @@ export class AccountService extends DolphServiceHandler<Dolph> {
     try {
       const account = await this.getAccountByID(data.id);
 
-      if (!account) throw new NotFoundException("Account does not exist");
+      if (!account) throw new NotFoundError("Account does not exist");
 
       if (!account.is_verified)
-        throw new NotAcceptableException("Account not verified");
+        throw new NotAllowedError("Account not verified");
+
+      if (account.password) throw new NotAllowedError("Password already set");
 
       await this.accountRepo.update(
         { id: account.id },
@@ -150,11 +152,11 @@ export class AccountService extends DolphServiceHandler<Dolph> {
   ): Promise<Account | undefined> {
     let account = await this.accountRepo.findOne({ where: { id } });
 
-    if (!account) throw new NotFoundException("Cannot find this account");
+    if (!account) throw new NotFoundError("Cannot find this account.");
 
     account.avatar = data.avatar;
     account.bio = data.bio;
-    account.campus = data.campus;
+    // account.campus = data.campus;
     account.country = data.country;
     account.two_factor_auth = data.two_factor_auth;
     account.dob = data.dob;

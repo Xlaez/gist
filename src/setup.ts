@@ -23,3 +23,10 @@ export const schema = async function createSchema() {
     validate: true,
   });
 };
+
+export const context = async ({ req, res }) => {
+  const session = req.session;
+  const cookies = req.cookies;
+
+  return { req, res, session, cookies };
+};

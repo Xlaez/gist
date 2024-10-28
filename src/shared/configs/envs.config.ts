@@ -7,6 +7,11 @@ export const redisConfigs = {
 export const serverConfigs = {
   sessionSecret: process.env.SESSION_SECRET || "sessionxxxsessionunpredictable",
   env: process.env.ENV || "development",
+  jwt: {
+    prodExpiration: process.env.JWT_EXPIRATION_PROD || 60,
+    devExpiration: process.env.JWT_EXPIRATION_DEV || 60,
+    secret: process.env.JWT_SECRET || "secretissostring",
+  },
 };
 
 export const postgresConfig = {

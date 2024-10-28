@@ -1,3 +1,4 @@
+import { Type } from "class-transformer";
 import {
   IsBoolean,
   IsDate,
@@ -70,14 +71,14 @@ export class SetBasicAccountDetailsInput {
   @IsNotEmpty()
   country: string;
 
-  @Field()
-  @IsString()
-  @IsNotEmpty()
-  campus: string;
+  // @Field()
+  // @IsString()
+  // @IsNotEmpty()
+  // campus: string;
 
   @Field()
-  @IsDate()
-  dob: string;
+  @Type(() => Date)
+  dob: Date;
 
   @Field({ nullable: true })
   @IsString()

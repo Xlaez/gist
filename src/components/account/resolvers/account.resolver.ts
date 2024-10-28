@@ -1,8 +1,9 @@
 import { AccountService } from "../services/account.service";
-import { Arg, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import { Account } from "../entities/account.entity";
 import {
   EmailInput,
+  SetBasicAccountDetailsInput,
   SetPasswordInput,
   VerifyOtpInput,
 } from "../inputs/create_account.input";
@@ -11,20 +12,25 @@ import {
   IsGistIdAvailableResponse,
   VerifyEmailResponse,
 } from "../responses/create_account.response";
+import { IContext } from "@/shared/interfaces/context.interface";
+import { TokenService } from "../services/token.service";
+import { setSession } from "@/shared/utils/session.utils";
+import { Authenticated } from "@/shared/decorators/authentication.decorator";
 
 @Resolver(() => Account)
 export class AccountResolver {
   private accountService: AccountService;
+  private tokenService: TokenService;
 
   constructor() {
     this.accountService = new AccountService();
+    this.tokenService = new TokenService();
   }
 
   @Query(() => Account, { nullable: true })
-  async getAccountByGistID(
-    @Arg("id", () => String) id: string
-  ): Promise<Account | undefined> {
-    return;
+  @Authenticated()
+  async getMyProfile(@Ctx() ctx: IContext): Promise<Account | undefined> {
+    return this.accountService.getAccountByID(ctx.account.id);
   }
 
   @Query(() => IsGistIdAvailableResponse)
@@ -74,10 +80,43 @@ export class AccountResolver {
 
   @Mutation(() => Account)
   async setPasswordAndID(
-    @Arg("data", () => SetPasswordInput) data: SetPasswordInput
+    @Arg("data", () => SetPasswordInput) data: SetPasswordInput,
+    @Ctx() ctx: IContext
   ): Promise<Account> {
     try {
-      return this.accountService.setPassword(data);
+      const account = await this.accountService.setPassword(data);
+
+      const { token } = this.tokenService.generateAuthToken(account.id);
+
+      setSession(ctx.req, account, token);
+
+      return account;
+    } catch (e: any) {
+      throw e;
+    }
+  }
+
+  @Mutation(() => Account)
+  @Authenticated()
+  async setBasicAccountDetails(
+    @Arg("data", () => SetBasicAccountDetailsInput)
+    data: SetBasicAccountDetailsInput,
+    @Ctx() ctx: IContext
+  ): Promise<Account> {
+    try {
+      const { res, req, account } = ctx;
+
+      const updatedAccount = await this.accountService.setBasicAccountDetails(
+        data as any,
+        account.id
+      );
+
+      const { token } = this.tokenService.generateAuthToken(account.id);
+
+      this.tokenService.sendAuthCookie(res as any, token);
+
+      setSession(req, updatedAccount, token);
+      return updatedAccount;
     } catch (e: any) {
       throw e;
     }
