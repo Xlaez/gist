@@ -7,14 +7,21 @@ import { AuthenticationError } from "type-graphql";
 import { CacheService } from "@/shared/services/cache_manager.service";
 import { generateOtp } from "@/shared/utils/otp_generator.utils";
 import { sendVerifyEmail } from "@/shared/services/mail.service";
-import { VerifyOtpInput } from "../inputs/create_account.input";
-import { hashWithBcrypt } from "@dolphjs/dolph/utilities";
+import {
+  LoginWithEmailInput,
+  VerifyOtpInput,
+} from "../inputs/create_account.input";
+import {
+  compareWithBcryptHash,
+  hashWithBcrypt,
+} from "@dolphjs/dolph/utilities";
 import { IsGistIdAvailableResponse } from "../responses/create_account.response";
 import {
   NotFoundError,
   NotAllowedError,
   BadRequestError,
   ServerError,
+  ForbiddenError,
 } from "@dolphjs/graphql/common";
 
 export class AccountService extends DolphServiceHandler<Dolph> {
@@ -162,6 +169,50 @@ export class AccountService extends DolphServiceHandler<Dolph> {
     account.dob = data.dob;
 
     return await this.accountRepo.save(account);
+  }
+
+  async loginWithPassword(data: LoginWithEmailInput): Promise<Account> {
+    try {
+      const account = await this.accountRepo.findOne({
+        where: [{ email: data.emailOrID }, { gist_id: data.emailOrID }],
+      });
+
+      if (!account) throw new BadRequestError("Incorrect login credentials");
+
+      if (account.is_banned)
+        throw new ForbiddenError(
+          "Account has been banned from accessing our servers."
+        );
+
+      if (account.is_deactivated)
+        throw new ForbiddenError(
+          "Account has been deactivated, visit the deactivation page to kow more"
+        );
+
+      if (!account.is_verified)
+        throw new NotAllowedError(
+          "Verify your account first in order to login"
+        );
+
+      if (
+        !compareWithBcryptHash({
+          pureString: data.password,
+          hashString: account.password,
+        })
+      ) {
+        throw new BadRequestError("Incorrect login credentials");
+      }
+
+      /**
+       * Todo: save device tokens here and check ip_address to send user otp i
+       */
+
+      if (!account.two_factor_auth) return account;
+
+      // send otp here
+    } catch (e: any) {
+      throw new ServerError(e?.message ? e.message : e);
+    }
   }
 
   async getAccountByID(id: string): Promise<Account | null | undefined> {

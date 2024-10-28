@@ -94,3 +94,27 @@ export class SetBasicAccountDetailsInput {
   @IsBoolean()
   two_factor_auth: boolean;
 }
+
+export class LoginWithEmailInput {
+  @Field()
+  @IsString()
+  @IsNotEmpty()
+  emailOrID: string;
+
+  @Field()
+  @IsString()
+  @Length(5, 30, {
+    message:
+      "Password cannot be less than 5 characters or more tha 30 characters",
+  })
+  @IsNotEmpty()
+  @Matches(
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%?&,.\[\]^*])[A-Za-z\d@$!%?&,.\[\]^*]+/,
+
+    {
+      message:
+        "Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character (@$!%?&)",
+    }
+  )
+  password: string;
+}
