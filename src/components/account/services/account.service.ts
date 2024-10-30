@@ -23,15 +23,19 @@ import {
   ServerError,
   ForbiddenError,
 } from "@dolphjs/graphql/common";
+import { Campus } from "@/components/campus/entities/campus.entity";
+import { CampusService } from "@/components/campus/services/campus.service";
 
 export class AccountService extends DolphServiceHandler<Dolph> {
   private readonly accountRepo: Repository<Account>;
+  private readonly campusService: CampusService;
   private readonly cacheService: CacheService;
 
   constructor() {
     super("accountService");
     this.accountRepo = AppDataSource.getRepository(Account);
     this.cacheService = new CacheService();
+    this.campusService = new CampusService();
   }
 
   async createAccount(data: Partial<Account>): Promise<Account> {
@@ -161,9 +165,15 @@ export class AccountService extends DolphServiceHandler<Dolph> {
 
     if (!account) throw new NotFoundError("Cannot find this account.");
 
+    const campus = await this.campusService.getCampusByID(
+      data.campus as unknown as string
+    );
+
+    if (!campus) throw new NotFoundError("Cannot find the selected campus.");
+
     account.avatar = data.avatar;
     account.bio = data.bio;
-    // account.campus = data.campus;
+    account.campus = campus;
     account.country = data.country;
     account.two_factor_auth = data.two_factor_auth;
     account.dob = data.dob;
@@ -220,7 +230,7 @@ export class AccountService extends DolphServiceHandler<Dolph> {
   }
 
   async getAccountByID(id: string): Promise<Account | null | undefined> {
-    return this.accountRepo.findOne({ where: { id } });
+    return this.accountRepo.findOne({ where: { id }, relations: ["campus"] });
   }
 
   async getAccountByEmail(email: string): Promise<Account | null | undefined> {

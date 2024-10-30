@@ -71,10 +71,10 @@ export class SetBasicAccountDetailsInput {
   @IsNotEmpty()
   country: string;
 
-  // @Field()
-  // @IsString()
-  // @IsNotEmpty()
-  // campus: string;
+  @Field()
+  @IsString()
+  @IsNotEmpty()
+  campus: string;
 
   @Field()
   @Type(() => Date)
