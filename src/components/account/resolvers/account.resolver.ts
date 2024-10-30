@@ -3,6 +3,7 @@ import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import { Account } from "../entities/account.entity";
 import {
   EmailInput,
+  LoginWithEmailInput,
   SetBasicAccountDetailsInput,
   SetPasswordInput,
   VerifyOtpInput,
@@ -117,6 +118,26 @@ export class AccountResolver {
 
       setSession(req, updatedAccount, token);
       return updatedAccount;
+    } catch (e: any) {
+      throw e;
+    }
+  }
+
+  @Mutation(() => Account)
+  async passwordSignIn(
+    @Arg("data", () => LoginWithEmailInput) data: LoginWithEmailInput,
+    @Ctx() ctx: IContext
+  ): Promise<Account> {
+    try {
+      const account = await this.accountService.loginWithPassword(data);
+
+      const { token } = this.tokenService.generateAuthToken(account.id);
+
+      this.tokenService.sendAuthCookie(ctx.res as any, token);
+
+      setSession(ctx.req, account, token);
+
+      return account;
     } catch (e: any) {
       throw e;
     }

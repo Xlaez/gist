@@ -8,6 +8,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
+import { Campus } from "./campus.entity";
 
 @ObjectType()
 @Entity()
@@ -20,7 +21,12 @@ export class Moderator {
   @Field(() => Account)
   @ManyToOne(() => Account, (account) => account.moderators)
   @JoinColumn({ name: "account_id" })
-  account: typeof Account;
+  account: Account;
+
+  @Field(() => Campus)
+  @ManyToOne(() => Campus, (campus) => campus.moderators)
+  @JoinColumn({ name: "campus_id" })
+  campus: Campus;
 
   @Field()
   @CreateDateColumn()

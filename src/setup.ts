@@ -4,6 +4,7 @@ import { serverConfigs } from "./shared/configs/envs.config";
 import { redisClient } from "./shared/configs/redis.config";
 import { buildSchema } from "type-graphql";
 import { AccountResolver } from "./components/account/resolvers/account.resolver";
+import { CampusResolver } from "./components/campus/resolvers/campus.resolver";
 
 export const session = expressSession({
   store: new RedisStore({ client: redisClient as any }),
@@ -19,7 +20,7 @@ export const session = expressSession({
 
 export const schema = async function createSchema() {
   return await buildSchema({
-    resolvers: [AccountResolver],
+    resolvers: [AccountResolver, CampusResolver],
     validate: true,
   });
 };

@@ -95,6 +95,7 @@ export class SetBasicAccountDetailsInput {
   two_factor_auth: boolean;
 }
 
+@InputType()
 export class LoginWithEmailInput {
   @Field()
   @IsString()

@@ -207,8 +207,12 @@ export class AccountService extends DolphServiceHandler<Dolph> {
        * Todo: save device tokens here and check ip_address to send user otp i
        */
 
-      if (!account.two_factor_auth) return account;
+      /**
+       * Todo: handle two factor authentication
+       */
+      // if (!account.two_factor_auth) return account;
 
+      return account;
       // send otp here
     } catch (e: any) {
       throw new ServerError(e?.message ? e.message : e);

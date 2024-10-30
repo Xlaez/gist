@@ -13,6 +13,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+import { Moderator } from "./moderator.entity";
 
 @ObjectType()
 @Entity()
@@ -66,6 +67,11 @@ export class Campus {
   @OneToMany(() => Account, (account) => account.campus)
   accounts: (typeof Account)[];
 
+  @Field(() => [Moderator], { nullable: false })
+  @OneToMany(() => Moderator, (moderator) => moderator.campus)
+  moderators: Moderator[];
+
+  @Field(() => [Gist], { nullable: true })
   @OneToMany(() => Gist, (gist) => gist.campus)
-  gists: (typeof Gist)[];
+  gists?: (typeof Gist)[];
 }
