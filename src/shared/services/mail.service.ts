@@ -45,3 +45,13 @@ export const sendVerifyEmail = async (to: string, otp: string) => {
     })
   );
 };
+
+export const sendTwoFactorEmail = async (to: string, otp: string) => {
+  return sendMail(
+    to,
+    "Two-factor Authentication Code",
+    convertFromMjmlToHtml("../../templates/receive_two_factor_email.mjml")({
+      otp,
+    })
+  );
+};

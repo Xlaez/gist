@@ -217,15 +217,30 @@ export class AccountService extends DolphServiceHandler<Dolph> {
        * Todo: save device tokens here and check ip_address to send user otp i
        */
 
-      /**
-       * Todo: handle two factor authentication
-       */
-      // if (!account.two_factor_auth) return account;
-
       return account;
-      // send otp here
     } catch (e: any) {
       throw new ServerError(e?.message ? e.message : e);
+    }
+  }
+
+  async verifyTwoStepAuthOtp(data: VerifyOtpInput): Promise<Account> {
+    try {
+      const otp = await this.cacheService.get(`1-${data.email}`);
+
+      if (!otp)
+        throw new AuthenticationError(
+          "Otp has either expired or is incorrect."
+        );
+
+      await this.cacheService.remove([`1-${data.email}`]);
+
+      if (otp === data.otp) {
+        return this.getAccountByEmail(data.email);
+      }
+
+      throw new AuthenticationError("Otp Incorrect. Provide the correct Otp");
+    } catch (e: any) {
+      throw e;
     }
   }
 

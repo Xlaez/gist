@@ -11,21 +11,27 @@ import {
 import { TryCatchAsyncDec } from "@dolphjs/dolph/common";
 import {
   IsGistIdAvailableResponse,
+  PasswordSignInResponse,
   VerifyEmailResponse,
 } from "../responses/create_account.response";
 import { IContext } from "@/shared/interfaces/context.interface";
 import { TokenService } from "../services/token.service";
 import { setSession } from "@/shared/utils/session.utils";
 import { Authenticated } from "@/shared/decorators/authentication.decorator";
+import { generateOtp } from "@/shared/utils/otp_generator.utils";
+import { CacheService } from "@/shared/services/cache_manager.service";
+import { sendTwoFactorEmail } from "@/shared/services/mail.service";
 
 @Resolver(() => Account)
 export class AccountResolver {
   private accountService: AccountService;
   private tokenService: TokenService;
+  private cacheService: CacheService;
 
   constructor() {
     this.accountService = new AccountService();
     this.tokenService = new TokenService();
+    this.cacheService = new CacheService();
   }
 
   @Query(() => Account, { nullable: true })
@@ -123,13 +129,46 @@ export class AccountResolver {
     }
   }
 
-  @Mutation(() => Account)
+  @Mutation(() => PasswordSignInResponse)
   async passwordSignIn(
     @Arg("data", () => LoginWithEmailInput) data: LoginWithEmailInput,
     @Ctx() ctx: IContext
-  ): Promise<Account> {
+  ): Promise<PasswordSignInResponse> {
     try {
       const account = await this.accountService.loginWithPassword(data);
+
+      if (!account.two_factor_auth) {
+        const { token } = this.tokenService.generateAuthToken(account.id);
+
+        this.tokenService.sendAuthCookie(ctx.res as any, token);
+
+        setSession(ctx.req, account, token);
+      } else {
+        const otp = generateOtp();
+
+        await this.cacheService.remove([`1-${account.email}`]);
+
+        await this.cacheService.save(`1-${account.email}`, otp, 3600);
+
+        sendTwoFactorEmail(account.email, otp);
+      }
+
+      return {
+        account,
+        otpSent: account.two_factor_auth,
+      };
+    } catch (e: any) {
+      throw e;
+    }
+  }
+
+  @Mutation(() => Account)
+  async verifyTwoStepAuthOtp(
+    @Arg("data", () => VerifyOtpInput) data: VerifyOtpInput,
+    @Ctx() ctx: IContext
+  ): Promise<Account> {
+    try {
+      const account = await this.accountService.verifyTwoStepAuthOtp(data);
 
       const { token } = this.tokenService.generateAuthToken(account.id);
 
