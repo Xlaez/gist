@@ -11,18 +11,21 @@ export class Popularity {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Field(() => String, { defaultValue: "meh" })
-  @Column({ unique: true, default: "meh" })
-  level: string;
+  @Field(() => Number)
+  @Column({ default: 0 })
+  level: number;
 
   // relationships
 
+  @Field(() => Account, { nullable: true })
   @OneToMany(() => Account, (account) => account.popularity)
-  accounts: Account[];
+  accounts?: Account[];
 
+  @Field(() => Campus)
   @OneToMany(() => Campus, (campus) => campus.popularity)
-  campuses: Campus[];
+  campus: Campus[];
 
+  @Field(() => Gist, { nullable: true })
   @OneToMany(() => Gist, (gist) => gist.popularity)
-  gists: Gist[];
+  gists?: Gist[];
 }

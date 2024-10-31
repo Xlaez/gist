@@ -74,10 +74,14 @@ export class CampusService extends DolphServiceHandler<Dolph> {
     });
   }
 
-  async getCampusByID(id: string): Promise<Campus> {
+  async getCampusByID(id: string): Promise<Campus | null> {
     return this.campusRepo.findOne({
       where: { id },
       relations: ["moderators", "moderators.account"],
     });
+  }
+
+  async getCampusByAccountID(id: string): Promise<Campus | null> {
+    return this.campusRepo.findOne({ where: { accounts: { id } } });
   }
 }

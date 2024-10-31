@@ -27,12 +27,12 @@ export class Gist {
   @Field(() => Account)
   @ManyToOne(() => Account, (account) => account.gists)
   @JoinColumn({ name: "account_id" })
-  account: typeof Account;
+  account: Account;
 
   @Field(() => Campus)
   @ManyToOne(() => Campus, (campus) => campus.gists)
   @JoinColumn({ name: "campus_id" })
-  campus: typeof Campus;
+  campus: Campus;
 
   @Field(() => String, { nullable: true })
   @Column({ type: "text", nullable: true })
@@ -79,10 +79,12 @@ export class Gist {
   parent_id?: string;
 
   // Relationships
+  @Field(() => Popularity)
   @ManyToOne(() => Popularity, (popularity) => popularity.gists)
   @JoinColumn({ name: "popularity" })
-  popularity: typeof Popularity;
+  popularity: Popularity;
 
+  @Field(() => Media)
   @OneToMany(() => Media, (media) => media.gist)
-  media: (typeof Media)[];
+  media: Media[];
 }

@@ -60,12 +60,13 @@ export class Campus {
   updated_at: Date;
 
   // Relationships
-  @ManyToOne(() => Popularity, (popularity) => popularity.campuses)
+  @ManyToOne(() => Popularity, (popularity) => popularity.campus)
   @JoinColumn({ name: "popularity" })
   popularity: typeof Popularity;
 
+  @Field(() => Account)
   @OneToMany(() => Account, (account) => account.campus)
-  accounts: (typeof Account)[];
+  accounts: Account[];
 
   @Field(() => [Moderator], { nullable: false })
   @OneToMany(() => Moderator, (moderator) => moderator.campus)
