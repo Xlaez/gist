@@ -1,7 +1,7 @@
 import { DolphControllerHandler } from "@dolphjs/dolph/classes";
 import { Dolph } from "@dolphjs/dolph/common";
 import { GistService } from "../services/gist.service";
-import { Arg, Ctx, Mutation, Resolver } from "type-graphql";
+import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import { Gist } from "../entities/gist.entity";
 import { CreateGistInput } from "../inputs/gist.inputs";
 import { IContext } from "@/shared/interfaces/context.interface";
@@ -23,6 +23,19 @@ export class GistResolver {
   ): Promise<Gist> {
     try {
       return this.gistService.createGist(data, ctx.account);
+    } catch (e: any) {
+      throw e;
+    }
+  }
+
+  @Query(() => Gist)
+  @Authenticated()
+  async fetchGist(
+    @Arg("gist_id", () => String) gist_id: string,
+    @Ctx() ctx: IContext
+  ): Promise<Gist[]> {
+    try {
+      return this.gistService.fetchGist(gist_id);
     } catch (e: any) {
       throw e;
     }

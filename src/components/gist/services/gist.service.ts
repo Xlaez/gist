@@ -82,4 +82,28 @@ export class GistService extends DolphServiceHandler<Dolph> {
      * Todo: broadcast notification to all accounts in a campus that a gist has dropped
      */
   }
+
+  /**
+   * Todo: when likes are added, load the likes and views too
+   */
+  async fetchGist(gist_id: string) {
+    const gists: Gist[] = [];
+
+    let currentGist = await this.gistRepo.findOne({
+      where: { id: gist_id },
+      relations: ["campus", "popularity", "media"],
+    });
+
+    while (currentGist) {
+      gists.push(currentGist);
+      if (!currentGist.has_parent) break;
+
+      currentGist = await this.gistRepo.findOne({
+        where: { id: currentGist.parent_id },
+        relations: ["campus", "popularity", "media"],
+      });
+    }
+
+    return gists;
+  }
 }
