@@ -104,6 +104,8 @@ export class GistService extends DolphServiceHandler<Dolph> {
       });
     }
 
+    console.log(gists);
+
     return gists;
   }
 }

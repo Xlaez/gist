@@ -28,7 +28,7 @@ export class GistResolver {
     }
   }
 
-  @Query(() => Gist)
+  @Query(() => [Gist])
   @Authenticated()
   async fetchGist(
     @Arg("gist_id", () => String) gist_id: string,
