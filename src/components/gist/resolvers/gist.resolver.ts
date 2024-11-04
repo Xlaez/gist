@@ -30,12 +30,25 @@ export class GistResolver {
 
   @Query(() => [Gist])
   @Authenticated()
-  async fetchGist(
+  async fetchGistWithParent(
     @Arg("gist_id", () => String) gist_id: string,
     @Ctx() ctx: IContext
   ): Promise<Gist[]> {
     try {
       return this.gistService.fetchGist(gist_id);
+    } catch (e: any) {
+      throw e;
+    }
+  }
+
+  @Query(() => Gist)
+  @Authenticated()
+  async fetchGist(
+    @Arg("gist_id", () => String) gist_id: string,
+    @Ctx() ctx: IContext
+  ): Promise<Gist> {
+    try {
+      return this.gistService.festGistID(gist_id);
     } catch (e: any) {
       throw e;
     }

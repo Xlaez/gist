@@ -9,6 +9,7 @@ import { Media } from "../entities/media.entity";
 import { AppDataSource } from "@/shared/configs/data_source";
 import { CampusService } from "@/components/campus/services/campus.service";
 import { NotFoundError } from "@dolphjs/graphql/common";
+import { Arg } from "type-graphql";
 
 export class GistService extends DolphServiceHandler<Dolph> {
   private readonly gistRepo: Repository<Gist>;
@@ -104,8 +105,13 @@ export class GistService extends DolphServiceHandler<Dolph> {
       });
     }
 
-    console.log(gists);
-
     return gists;
+  }
+
+  async festGistID(gist_id: string) {
+    return this.gistRepo.findOne({
+      where: { id: gist_id },
+      relations: ["campus", "popularity", "media"],
+    });
   }
 }
