@@ -11,4 +11,4 @@ AppDataSource.initialize()
   .then(() => {
     dolph.start();
   })
-  .catch((err) => logger.error(`[App Error]:`, err));
+  .catch((err) => logger.error(`[Dolph Error]:`, err));

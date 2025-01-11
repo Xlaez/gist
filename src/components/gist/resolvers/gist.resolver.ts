@@ -1,5 +1,3 @@
-import { DolphControllerHandler } from "@dolphjs/dolph/classes";
-import { Dolph } from "@dolphjs/dolph/common";
 import { GistService } from "../services/gist.service";
 import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import { Gist } from "../entities/gist.entity";
