@@ -7,6 +7,7 @@ import { AppDataSource } from "@/shared/configs/data_source";
 import { Moderator } from "../entities/moderator.entity";
 import { Account } from "@/components/account/entities/account.entity";
 import {
+  ForbiddenError,
   NotAllowedError,
   NotFoundError,
   ServerError,
@@ -32,7 +33,11 @@ export class CampusService extends DolphServiceHandler<Dolph> {
   ): Promise<Campus> {
     try {
       const existingCampus = await this.campusRepo.findOne({
-        where: [{ domain: data.domain }, { name: data.name }],
+        where: [
+          { domain: data.domain },
+          { name: data.name },
+          { is_deleted: false },
+        ],
       });
 
       if (existingCampus) {
@@ -79,12 +84,46 @@ export class CampusService extends DolphServiceHandler<Dolph> {
 
   async getCampusByID(id: string): Promise<Campus | null> {
     return this.campusRepo.findOne({
-      where: { id },
+      where: { id, is_deleted: false },
       relations: ["moderators", "moderators.account"],
     });
   }
 
   async getCampusByAccountID(id: string): Promise<Campus | null> {
-    return this.campusRepo.findOne({ where: { accounts: { id } } });
+    return this.campusRepo.findOne({
+      where: { accounts: { id }, is_deleted: false },
+    });
+  }
+
+  async deleteCampus(id: string, account: Partial<Account>): Promise<Campus> {
+    let campus = await this.campusRepo.findOne({
+      where: { id, is_deleted: false },
+      relations: ["moderators"],
+    });
+
+    let isModerator = false;
+
+    for (let i = 0; i < campus.moderators.length; i++) {
+      if (campus.moderators[i].account.id == account.id) {
+        isModerator = true;
+        break;
+      }
+    }
+
+    /**
+     * Todo: make it a delete request so that the moderators vote and if 3/4 approve it gets deleted
+     */
+    if (!isModerator)
+      throw new ForbiddenError(
+        "You cannot delete a campus you are not a moderator of"
+      );
+
+    if (!campus) throw new NotFoundError("Campus not found");
+
+    campus.is_deleted = true;
+
+    campus = await this.campusRepo.save(campus);
+
+    return campus;
   }
 }

@@ -44,4 +44,17 @@ export class CampusResolver {
       throw e;
     }
   }
+
+  @Mutation(() => Campus)
+  @Authenticated()
+  async deleteCampus(
+    @Arg("campus_id", () => String) campus_id: string,
+    @Ctx() ctx: IContext
+  ): Promise<Campus> {
+    try {
+      return this.campusService.deleteCampus(campus_id, ctx.account);
+    } catch (e: any) {
+      throw e;
+    }
+  }
 }
