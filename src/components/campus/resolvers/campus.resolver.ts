@@ -21,7 +21,7 @@ export class CampusResolver {
     @Ctx() ctx: IContext
   ): Promise<Campus> {
     try {
-      return this.campusService.createCampus(data, ctx.account.id);
+      return this.campusService.createCampus(data, ctx.account.id, ctx.account);
     } catch (e: any) {
       throw e;
     }

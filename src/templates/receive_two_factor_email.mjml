@@ -10,21 +10,16 @@
   <mj-body background-color="#000000">
     <mj-section>
       <mj-column>
-        <mj-image src="https://asset.cloudinary.com/kamounation/533bc4bde0391226360693e91bf20ec3" alt="Logo" width="100px" align="center" />
-      </mj-column>
-    </mj-section>
-    <mj-section>
-      <mj-column>
         <mj-text font-size="24px" font-weight="bold" align="center" color="cornflowerblue">
           Two-Factor Authentication
         </mj-text>
-        <mj-text align="center" color="cornflowerblue">
+        <mj-text align="center" color="cornflowerblue" font-size="17px">
           Hello! To complete your login, please enter the following OTP within the next few minutes.
         </mj-text>
         <mj-text font-size="32px" font-weight="bold" align="center" color="cornflowerblue">
           {{otp}}
         </mj-text>
-        <mj-text font-size="14px" align="center" color="cornflowerblue">
+        <mj-text font-size="15px" align="center" color="#666666">
           This code will expire in 10 minutes. If you didn't request this OTP, please disregard this email.
         </mj-text>
       </mj-column>
@@ -32,7 +27,7 @@
     <mj-section>
       <mj-column>
         <mj-text font-size="12px" color="#666666" align="center">
-          &copy; 2023 YourCompany. All rights reserved.
+          &copy; 2025 YourCompany. All rights reserved.
         </mj-text>
       </mj-column>
     </mj-section>

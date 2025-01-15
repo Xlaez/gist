@@ -27,7 +27,8 @@ export class CampusService extends DolphServiceHandler<Dolph> {
 
   async createCampus(
     data: Partial<Campus>,
-    accountId: string
+    accountId: string,
+    account: Partial<Account>
   ): Promise<Campus> {
     try {
       const existingCampus = await this.campusRepo.findOne({
@@ -43,6 +44,8 @@ export class CampusService extends DolphServiceHandler<Dolph> {
       }
 
       const campus = this.campusRepo.create({ ...data });
+
+      campus.accounts = [account as Account];
 
       const newCampus = await this.campusRepo.save(campus);
 
