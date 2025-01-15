@@ -23,7 +23,7 @@ export class NotificationService extends DolphServiceHandler<Dolph> {
     return this.notificationRepo.save(notification);
   }
 
-  async getNotificationByID(id: string) {
+  async getNotificationByID(id: string): Promise<Notification> {
     return this.notificationRepo.findOne({
       where: { id },
     });

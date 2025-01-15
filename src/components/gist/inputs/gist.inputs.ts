@@ -43,3 +43,19 @@ export class CreateGistInput {
   @IsArray()
   media?: MediaData[];
 }
+
+@InputType()
+export class UpdateGistInput {
+  @Field({ nullable: true })
+  @IsString()
+  @Length(1, 300, { message: "A gist cannot be more than 300 characters" })
+  text?: string;
+
+  @Field()
+  @IsBoolean()
+  is_public: boolean;
+
+  @Field()
+  @IsString()
+  gist_id: string;
+}

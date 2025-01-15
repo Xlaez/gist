@@ -6,6 +6,7 @@ import { buildSchema } from "type-graphql";
 import { AccountResolver } from "./components/account/resolvers/account.resolver";
 import { CampusResolver } from "./components/campus/resolvers/campus.resolver";
 import { GistResolver } from "./components/gist/resolvers/gist.resolver";
+import { NotificationResolver } from "./components/notification/resolvers/notification.resolver";
 
 export const session = expressSession({
   store: new RedisStore({ client: redisClient as any }),
@@ -21,7 +22,12 @@ export const session = expressSession({
 
 export const schema = async function createSchema() {
   return await buildSchema({
-    resolvers: [AccountResolver, CampusResolver, GistResolver],
+    resolvers: [
+      AccountResolver,
+      CampusResolver,
+      GistResolver,
+      NotificationResolver,
+    ],
     validate: true,
   });
 };

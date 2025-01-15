@@ -1,6 +1,6 @@
 import { DolphServiceHandler } from "@dolphjs/dolph/classes";
 import { Dolph } from "@dolphjs/dolph/common";
-import { CreateGistInput } from "../inputs/gist.inputs";
+import { CreateGistInput, UpdateGistInput } from "../inputs/gist.inputs";
 import { Account } from "@/components/account/entities/account.entity";
 import { Repository } from "typeorm";
 import { Gist } from "../entities/gist.entity";
@@ -91,7 +91,7 @@ export class GistService extends DolphServiceHandler<Dolph> {
     const gists: Gist[] = [];
 
     let currentGist = await this.gistRepo.findOne({
-      where: { id: gist_id },
+      where: { id: gist_id, is_deleted: false },
       relations: ["campus", "popularity", "media"],
     });
 
@@ -110,8 +110,44 @@ export class GistService extends DolphServiceHandler<Dolph> {
 
   async festGistID(gist_id: string) {
     return this.gistRepo.findOne({
-      where: { id: gist_id },
+      where: { id: gist_id, is_deleted: false },
       relations: ["campus", "popularity", "media"],
     });
+  }
+
+  async updateGist(
+    gist_id: string,
+    data: UpdateGistInput,
+    account: Partial<Account>
+  ) {
+    console.log(account);
+    let gist = await this.gistRepo.findOne({
+      where: { id: gist_id, account: { id: account.id }, is_deleted: false },
+    });
+
+    if (!gist) throw new NotFoundError("Gist not found");
+
+    if (data.is_public) {
+      gist.is_public = data.is_public;
+    }
+
+    if (data.text) {
+      gist.text = data.text;
+    }
+
+    gist = await this.gistRepo.save(gist);
+
+    return gist;
+  }
+
+  async deleteGist(id: string, account: Partial<Account>) {
+    const gist = await this.gistRepo.findOne({
+      where: { id, account: { id: account.id } },
+    });
+
+    if (!gist) throw new NotFoundError("Gist not found");
+
+    gist.is_deleted = true;
+    return this.gistRepo.save(gist);
   }
 }
