@@ -19,6 +19,7 @@ import {
   UpdateDateColumn,
 } from "typeorm";
 import { AccountDevice } from "./account_devices.entity";
+import { Notification } from "@/components/notification/entities/notification.entity";
 
 @ObjectType()
 @Entity()
@@ -134,6 +135,9 @@ export class Account {
 
   @OneToMany(() => Moderator, (moderator) => moderator.account)
   moderators: Moderator[];
+
+  @OneToMany(() => Notification, (notification) => notification.account)
+  notifications?: Notification[];
 
   @BeforeInsert()
   generateAvatar() {

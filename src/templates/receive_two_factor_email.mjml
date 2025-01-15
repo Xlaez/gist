@@ -14,7 +14,7 @@
           Two-Factor Authentication
         </mj-text>
         <mj-text align="center" color="cornflowerblue" font-size="17px">
-          Hello! To complete your login, please enter the following OTP within the next few minutes.
+          Hii Buddy! To complete your login, please enter the following OTP within the next few minutes.
         </mj-text>
         <mj-text font-size="32px" font-weight="bold" align="center" color="cornflowerblue">
           {{otp}}

@@ -11,6 +11,7 @@ import { DataSource } from "typeorm";
 import { postgresConfig, serverConfigs } from "./envs.config";
 import { Report } from "@/components/reports/entities/report.entity";
 import { Moderator } from "@/components/campus/entities/moderator.entity";
+import { Notification } from "@/components/notification/entities/notification.entity";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
@@ -30,6 +31,7 @@ export const AppDataSource = new DataSource({
     Report,
     Moderator,
     Subscription,
+    Notification,
     SubscriptionService,
   ],
   synchronize: serverConfigs.env === "development",
